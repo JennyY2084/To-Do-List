@@ -1,3 +1,5 @@
+FILE_NAME = "ToDoListVersion1.txt"
+
 def load_menu():
     print("To Do List Menu")
     option_1 = "1. Add a task"
@@ -28,6 +30,7 @@ def add_task(task_list):
     save_option = input("Do you want to save the task list? (yes/no): ")
     if save_option.lower() == "yes":
         print("Task list saved.")
+        append_to_file(task_list) 
     else:
         print("Task list is not saved.")
     back_to_menu = input("Do you want to return to the menu? (yes/no): ")
@@ -36,7 +39,6 @@ def add_task(task_list):
     else:
         print("Exiting...")
    
-    
     
 
 def view_task(task_list):
@@ -61,6 +63,12 @@ def remove_task(task_list):
         load_menu()
     else:
         print("Exiting...") 
+        
+def append_to_file(task_list):
+    with open(FILE_NAME, "a") as file:
+        for task in task_list:
+            file.write(task)
+            
     
         
 def main():
