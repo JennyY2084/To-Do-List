@@ -19,3 +19,20 @@ def load_menu():
     else:
         print("Exiting...")
     
+
+def add_task(task_list):
+    new_task = input("Please enter a task: ")
+    task_list.append(new_task)
+    print(f"Task '{new_task}' is now added to the list.")
+    print(f"Your current tasks: {task_list}")
+    save_option = input("Do you want to save the task list? (yes/no): ")
+    if save_option.lower() == "yes":
+        print("Task list saved.")
+    else:
+        print("Task list is not saved.")
+    back_to_menu = input("Do you want to return to the menu? (yes/no): ")
+    if back_to_menu == "yes":
+        load_menu()
+    else:
+        print("Exiting...")
+   
