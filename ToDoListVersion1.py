@@ -47,4 +47,23 @@ def view_task(task_list):
     else:
         print("Exiting...")
     
- 
+    
+def remove_task(task_list):
+    task_to_remove = input("Please enter the task you want to remove: ")
+    if task_to_remove in task_list:
+        task_list.remove(task_to_remove)
+        print(f"Task '{task_to_remove}' has been removed.")
+    else:
+        print(f"Task '{task_to_remove}' not found in the list.")
+    print(f"Your current tasks: {task_list}")
+    back_to_menu = input("Do you want to return to the menu? (yes/no): ")
+    if back_to_menu == "yes":
+        load_menu()
+    else:
+        print("Exiting...") 
+    
+        
+def main():
+   load_menu()
+
+main()
