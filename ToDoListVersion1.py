@@ -38,11 +38,10 @@ def add_task(task_list):
         load_menu()
     else:
         print("Exiting...")
-   
     
 
 def view_task(task_list):
-    print(f"Your tasks: {task_list}")
+    print(f"Your current tasks: {read_from_file()}")
     back_to_menu = input("Do you want to return to the menu? (yes/no): ")
     if back_to_menu == "yes":
         load_menu()
@@ -69,7 +68,11 @@ def append_to_file(task_list):
         for task in task_list:
             file.write(task)
             
-    
+def read_from_file():
+    with open(FILE_NAME, "r") as file:
+        tasks = file.read()
+        return tasks
+            
         
 def main():
    load_menu()
