@@ -36,3 +36,15 @@ def add_task(task_list):
     else:
         print("Exiting...")
    
+    
+    
+
+def view_task(task_list):
+    print(f"Your tasks: {task_list}")
+    back_to_menu = input("Do you want to return to the menu? (yes/no): ")
+    if back_to_menu == "yes":
+        load_menu()
+    else:
+        print("Exiting...")
+    
+ 
