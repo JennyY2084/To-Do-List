@@ -30,7 +30,7 @@ def add_task(task_list):
     save_option = input("Do you want to save the task list? (yes/no): ")
     if save_option.lower() == "yes":
         print("Task list saved.")
-        append_to_file(task_list) 
+        append_to_file(task_list)
     else:
         print("Task list is not saved.")
     back_to_menu = input("Do you want to return to the menu? (yes/no): ")
@@ -62,12 +62,12 @@ def remove_task(task_list):
         load_menu()
     else:
         print("Exiting...") 
-        
+
 def append_to_file(task_list):
     with open(FILE_NAME, "a") as file:
         for task in task_list:
-            file.write(task)
-            
+            file.write(task + "\n")
+
 def read_from_file():
     with open(FILE_NAME, "r") as file:
         tasks = file.read()
