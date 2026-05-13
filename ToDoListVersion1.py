@@ -18,13 +18,13 @@ def load_menu():
     tasks_list = []
     # Call the corresponding function based on the user's choice, 
     # and pass the tasks list to the function.
-    if user_option == 1:
+    if user_option == "1":
         add_task(tasks_list)
-    elif user_option == 2:
+    elif user_option == "2":
         view_task(tasks_list)
-    elif user_option == 3:
+    elif user_option == "3":
        remove_task(tasks_list)
-    elif user_option == 4:
+    elif user_option == "4":
         print("Exiting...")
     # Prints out an message to tell te user that they 
     # entered an invalid option and reload the menu.
