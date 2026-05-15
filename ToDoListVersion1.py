@@ -49,14 +49,18 @@ def add_task(task_list):
     if save_option.lower() == "yes":
         print("Task list saved.")
         append_to_file(task_list)
-    else:
+    elif save_option.lower() == "no":
         print("Task list is not saved.")
+    else:
+        print("You have entered an invalid option, task list is not saved.")
     # Ask the user to choose if they want to return to the menu or exit the program.
     back_to_menu = input("Do you want to return to the menu? (yes/no): ")
-    if back_to_menu == "yes":
+    if back_to_menu.lower() == "yes":
         load_menu()
-    else:
+    elif back_to_menu.lower() == "no":
         print("Exiting...")
+    else:
+        print("This option is invalid, exiting...")
     
 # The function to view the current tasks in the tasks list.
 def view_task(task_list):
