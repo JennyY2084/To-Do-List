@@ -1,17 +1,18 @@
-# The file name to store the tasks in the to do list.
-FILE_NAME = "ToDoListVersion1.txt"
-
 # The function toload the menu and ask the user to input an option.
 def load_menu():
     print("To Do List Menu")
-    option_1 = "1. Add a task"
-    option_2 = "2. View tasks"
-    option_3 = "3. Remove a task"
-    option_4 = "4. Exit"
+    option_1 = "1. Create a new list"
+    option_2 = "2. Load an existing list"
+    option_3 = "3. Add a task"
+    option_4 = "4. View tasks"
+    option_5 = "5. Remove a task"
+    option_6 = "6. Exit"
     print(option_1)
     print(option_2)
     print(option_3)
     print(option_4)
+    print(option_5)
+    print(option_6)
     # Ask the user to select an option.
     user_option = input("Please select an option: ")
     # Create an empty list to store the user's tasks.
@@ -19,18 +20,53 @@ def load_menu():
     # Call the corresponding function based on the user's choice, 
     # and pass the tasks list to the function.
     if user_option == "1":
-        add_task(tasks_list)
+        ask_list_name()
+        create_list_file()
     elif user_option == "2":
-        view_task(tasks_list)
+        ask_list_name()
+        load_list_file()
     elif user_option == "3":
-       remove_task(tasks_list)
+        add_task(tasks_list)
     elif user_option == "4":
+        view_task(tasks_list)
+    elif user_option == "5":
+       remove_task(tasks_list)
+    elif user_option == "6":
         print("Exiting...")
     # Prints out an message to tell te user that they 
     # entered an invalid option and reload the menu.
     else:
         print("Invalid option, please try again.")
         load_menu()
+        
+def ask_list_name():
+    list_name = input("Please enter the name of the list you want to create: ")
+    return list_name
+
+LIST_NAME = ask_list_name
+
+def create_list_file():
+    open(LIST_NAME, "w").close()
+    print(f"List '{LIST_NAME}' has been created.")
+    return_to_menu = input("Do you want to return to the menu? (yes/no): ")
+    if return_to_menu.lower() == "yes":
+        load_menu()
+    elif return_to_menu.lower() == "no":
+        print("Exiting...")
+    else:
+        print("Invalid option, exiting...")
+    
+def load_list_file():
+    with open(LIST_NAME, "r") as file:
+        tasks = file.read()
+        print(f"Your current tasks: {tasks}")
+    add_task_option = input(f"Do you want to add a task to the list {LIST_NAME}? (yes/no): ")
+    if add_task_option.lower() == "yes":
+        add_task(tasks)
+    elif add_task_option.lower() == "no":
+        print("Returning to menu...")
+    else:
+        print("Invalid option, returning to menu...")
     
 # The function to add tasks to the tasks list.
 def add_task(task_list):
@@ -93,7 +129,7 @@ def remove_task(task_list):
 
 # The function to append tasks to the file.
 def append_to_file(task_list):
-    with open(FILE_NAME, "a") as file:
+    with open(LIST_NAME, "a") as file:
         for task in task_list:
             # Append tasks in the task list to the file and add a new line after each task.
             file.write(task + "\n")
@@ -101,7 +137,7 @@ def append_to_file(task_list):
 # The function to read existing tasks from the file and return them as a string, 
 # to be displayed whent the user choose to view tasks.
 def read_from_file():
-    with open(FILE_NAME, "r") as file:
+    with open(LIST_NAME, "r") as file:
         tasks = file.read()
         return tasks
             
