@@ -1,5 +1,6 @@
 # The function toload the menu and ask the user to input an option.
 def load_menu():
+    global list_name
     print("To Do List Menu")
     option_1 = "1. Create a new list"
     option_2 = "2. Load an existing list"
@@ -15,22 +16,20 @@ def load_menu():
     print(option_6)
     # Ask the user to select an option.
     user_option = input("Please select an option: ")
-    # Create an empty list to store the user's tasks.
-    tasks_list = []
     # Call the corresponding function based on the user's choice, 
     # and pass the tasks list to the function.
     if user_option == "1":
-        ask_list_name()
+        list_name = ask_list_name_to_create()
         create_list_file()
     elif user_option == "2":
-        ask_list_name()
+        list_name = ask_list_name_to_load()
         load_list_file()
     elif user_option == "3":
-        add_task(tasks_list)
+        add_task(task_list)
     elif user_option == "4":
-        view_task(tasks_list)
+        view_task(task_list)
     elif user_option == "5":
-       remove_task(tasks_list)
+       remove_task(task_list)
     elif user_option == "6":
         print("Exiting...")
     # Prints out an message to tell te user that they 
@@ -39,15 +38,37 @@ def load_menu():
         print("Invalid option, please try again.")
         load_menu()
         
-def ask_list_name():
-    list_name = input("Please enter the name of the list you want to create: ")
-    return list_name
+def ask_list_name_to_create():
+    list_name_to_create = input("Please enter the name of the list you want to create: ")
+    return list_name_to_create
 
-LIST_NAME = ask_list_name
+def ask_list_name_to_load():
+    list_name_to_load = input("Please enter the name of the list you want to view: ")
+    return list_name_to_load
+
+# The function to append tasks to the file.
+def append_to_file(task_list):
+    with open(list_name, "a") as file:
+        for task in task_list:
+            # Append tasks in the task list to the file and add a new line after each task.
+            file.write(task + "\n")
+            
+# The function to read existing tasks from the file and return them as a string, 
+# to be displayed whent the user choose to view tasks.
+def read_from_file():
+    with open(list_name, "r") as file:
+        tasks = file.read().capitalize()
+        return tasks
+
+# Create an empty list to store the user's tasks.
+task_list = []
+
+list_name_to_create = ""
 
 def create_list_file():
-    open(LIST_NAME, "w").close()
-    print(f"List '{LIST_NAME}' has been created.")
+    with open(list_name_to_create, "w") as file:
+        pass
+    print(f"List '{list_name_to_create}' has been created.")
     return_to_menu = input("Do you want to return to the menu? (yes/no): ")
     if return_to_menu.lower() == "yes":
         load_menu()
@@ -57,10 +78,10 @@ def create_list_file():
         print("Invalid option, exiting...")
     
 def load_list_file():
-    with open(LIST_NAME, "r") as file:
+    with open(list_name, "r") as file:
         tasks = file.read()
         print(f"Your current tasks: {tasks}")
-    add_task_option = input(f"Do you want to add a task to the list {LIST_NAME}? (yes/no): ")
+    add_task_option = input(f"Do you want to add a task to the list {list_name}? (yes/no): ")
     if add_task_option.lower() == "yes":
         add_task(tasks)
     elif add_task_option.lower() == "no":
@@ -126,20 +147,6 @@ def remove_task(task_list):
         load_menu()
     else:
         print("Exiting...") 
-
-# The function to append tasks to the file.
-def append_to_file(task_list):
-    with open(LIST_NAME, "a") as file:
-        for task in task_list:
-            # Append tasks in the task list to the file and add a new line after each task.
-            file.write(task + "\n")
-
-# The function to read existing tasks from the file and return them as a string, 
-# to be displayed whent the user choose to view tasks.
-def read_from_file():
-    with open(LIST_NAME, "r") as file:
-        tasks = file.read()
-        return tasks
             
 # The main function to start the program from loading the menu.     
 def main():
