@@ -1,4 +1,4 @@
-# The function toload the menu and ask the user to input an option.
+# The function to load the menu and ask the user to input an option.
 def load_menu():
     global list_name
     print("To Do List Menu")
@@ -63,12 +63,10 @@ def read_from_file():
 # Create an empty list to store the user's tasks.
 task_list = []
 
-list_name_to_create = ""
-
 def create_list_file():
-    with open(list_name_to_create, "w") as file:
+    with open(list_name, "w") as file:
         pass
-    print(f"List '{list_name_to_create}' has been created.")
+    print(f"List '{list_name}' has been created.")
     return_to_menu = input("Do you want to return to the menu? (yes/no): ")
     if return_to_menu.lower() == "yes":
         load_menu()
@@ -83,7 +81,7 @@ def load_list_file():
         print(f"Your current tasks: {tasks}")
     add_task_option = input(f"Do you want to add a task to the list {list_name}? (yes/no): ")
     if add_task_option.lower() == "yes":
-        add_task(tasks)
+        add_task(task_list)
     elif add_task_option.lower() == "no":
         print("Returning to menu...")
     else:
