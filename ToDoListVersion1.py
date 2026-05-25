@@ -1,13 +1,18 @@
 # The function to load the menu and ask the user to input an option.
+from os import remove
+
+
 def load_menu():
     global list_name
     print("To Do List Menu")
     option_1 = "1. Create a new list"
     option_2 = "2. Load an existing list"
-    option_3 = "3. Exit"
+    option_3 = "3. Delete an existing list"
+    option_4 = "4. Exit"
     print(option_1)
     print(option_2)
     print(option_3)
+    print(option_4)
     # Ask the user to select an option.
     user_option = input("Please select an option: ")
     # Call the corresponding function based on the user's choice, 
@@ -19,6 +24,8 @@ def load_menu():
         list_name = ask_list_name_to_load()
         load_list_file()
     elif user_option == "3":
+        delete_list_file()
+    elif user_option == "4":
         print("Exiting...")
     # Prints out an message to tell te user that they 
     # entered an invalid option and reload the menu.
@@ -26,17 +33,22 @@ def load_menu():
         print("Invalid option, please select either 1, 2, or3.")
         load_menu()
 
+
 # Create an empty list to store the user's tasks.
 task_list = []
 
+
+# Ask the user to enter the name of the list they want to create or load, and return the name.
 def ask_list_name_to_create():
     list_name_to_create = input("Please enter the name of the list you want to create: ")
     return list_name_to_create
-
 def ask_list_name_to_load():
     list_name_to_load = input("Please enter the name of the list you want to view: ")
     return list_name_to_load
 
+
+# The function to ask the user if they want to add a task to the list, 
+# and call the add task function if they choose yes.
 def add_task_option():
     add_task_option = input("Do you want to add a task to this list? (yes/no): ")
     if add_task_option.lower() == "yes":
@@ -47,6 +59,9 @@ def add_task_option():
         print("Invalid option, returning to menu...")
         load_menu()
     
+    
+# The function to ask the user if they want to delete a task from the list,
+# and call the remove task function if they choose yes.
 def delete_task_option():
     delete_task_option = input("Do you want to delete a task from this list? (yes/no): ")
     if delete_task_option.lower() == "yes":
@@ -57,6 +72,7 @@ def delete_task_option():
     else:
         print("Invalid option, returning to menu...")
         load_menu()
+   
     
 # Ask the user to choose if they want to return to the menu or exit the program.
 def return_to_menu_option():
@@ -67,6 +83,7 @@ def return_to_menu_option():
         print("Exiting...")
     else:
         print("Invalid option, exiting...")
+
 
 # The function to append tasks to the file.
 def append_to_file(task_list):
@@ -82,6 +99,8 @@ def read_from_file():
         tasks = file.read().capitalize()
         return tasks
 
+
+# The function to create a new list file.
 def create_list_file():
     global list_name
     try:
@@ -90,6 +109,7 @@ def create_list_file():
             list_name = ask_list_name_to_create()
             create_list_file()
             return
+    # If the file does not exist, create a new file with the given name.
     except FileNotFoundError:
         with open(list_name, "w"):
             pass
@@ -97,8 +117,10 @@ def create_list_file():
     add_task_option()
     return_to_menu_option()
     
+    
+# The function to load an existing list file and display the current tasks,
+# and ask the user whether they want to add or delete tasks.
 def load_list_file():
-    global task_list
     try:
         with open(list_name, "r") as file:
             task_list = file.read().splitlines()
@@ -111,6 +133,20 @@ def load_list_file():
     except FileNotFoundError:
         print(f"List '{list_name}' does not exist, please enter a valid list name.")
         ask_list_name_to_load()
+   
+ 
+# The function to delete an existing list file.
+def delete_list_file():
+    global list_name
+    task_to_delete = input("Please enter the name of the list you want to delete: ")
+    if task_to_delete == list_name:
+        try:
+            remove(list_name)
+            print(f"List '{list_name}' has been deleted.")
+        except FileNotFoundError:
+            print(f"List '{list_name}' does not exist, please enter a valid list name.")
+            delete_list_file()
+
  
 # The function to add tasks to the tasks list.
 def add_task(task_list):
@@ -135,6 +171,7 @@ def add_task(task_list):
         print("You have entered an invalid option, task list is not saved.")
     return_to_menu_option()
     
+    
 # The function to remove tasks from the task list.    
 def remove_task(task_list):
     # Ask the user for the task they want to remove.
@@ -154,8 +191,12 @@ def remove_task(task_list):
     else:
         print("Exiting...") 
             
+            
 # The main function to start the program from loading the menu.     
 def main():
    load_menu()
 
-main()
+
+# Call the main function to start the program.
+if __name__ == "__main__":
+    main()
