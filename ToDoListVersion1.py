@@ -4,7 +4,7 @@ def load_menu():
     print("To Do List Menu")
     option_1 = "1. Create a new list"
     option_2 = "2. Load an existing list"
-    option_3 = "6. Exit"
+    option_3 = "3. Exit"
     print(option_1)
     print(option_2)
     print(option_3)
@@ -42,8 +42,7 @@ def add_task_option():
     if add_task_option.lower() == "yes":
         add_task(task_list)
     elif add_task_option.lower() == "no":
-        print("Returning to menu...")
-        load_menu()
+        print("Skipping add task...")
     else:
         print("Invalid option, returning to menu...")
         load_menu()
@@ -72,9 +71,9 @@ def return_to_menu_option():
 # The function to append tasks to the file.
 def append_to_file(task_list):
     with open(list_name, "a") as file:
-        for task in task_list:
+        for tasks in task_list:
             # Append tasks in the task list to the file and add a new line after each task.
-            file.write(task + "\n")
+            file.write(tasks + "\n")
             
 # The function to read existing tasks from the file and return them as a string, 
 # to be displayed whent the user choose to view tasks.
@@ -84,20 +83,33 @@ def read_from_file():
         return tasks
 
 def create_list_file():
-    with open(list_name, "w") as file:
-        pass
-    print(f"List '{list_name}' has been created.")
+    global list_name
+    try:
+        with open(list_name, "r"):
+            print(f"List '{list_name}' already exists, please enter a different name: ")
+            list_name = ask_list_name_to_create()
+            create_list_file()
+            return
+    except FileNotFoundError:
+        with open(list_name, "w"):
+            pass
+        print(f"List '{list_name}' has been created.")
     add_task_option()
     return_to_menu_option()
     
 def load_list_file():
+    global task_list
     try:
         with open(list_name, "r") as file:
-            tasks = file.read()
-            print(f"Your current tasks: {tasks}")
+            task_list = file.read().splitlines()
+            if task_list:
+                print(f"Your current tasks: {task_list}")
+            else:
+                print("Your task list is empty.")
             add_task_option()
+            delete_task_option()
     except FileNotFoundError:
-        print(f"List '{list_name}' does not exist, please enter a valid list name: ")
+        print(f"List '{list_name}' does not exist, please enter a valid list name.")
         ask_list_name_to_load()
  
 # The function to add tasks to the tasks list.
@@ -125,7 +137,6 @@ def add_task(task_list):
     
 # The function to remove tasks from the task list.    
 def remove_task(task_list):
-    delete_task_option()
     # Ask the user for the task they want to remove.
     task_to_remove = input("Please enter the task you want to remove: ")
     # Check if the task is in the task list and remove it if it is,
