@@ -1,7 +1,6 @@
-# The function to load the menu and ask the user to input an option.
 from os import remove
 
-
+# The function to load the menu and ask the user to input an option.
 def load_menu():
     global list_name
     print("To Do List Menu")
