@@ -1,5 +1,5 @@
 import easygui
-from os import remove
+import os
 
 # The function to load the menu and ask the user to input an option.
 def load_menu():
@@ -35,49 +35,79 @@ task_list = []
 # Ask the user to enter the name of the list they want to create or load, and return the name.
 def ask_list_name_to_create():
     list_name_to_create = easygui.enterbox("Please enter the name of the list you want to create: ")
-    return list_name_to_create
+    return list_name_to_create + ".txt"
 def ask_list_name_to_load():
-    list_name_to_load = easygui.enterbox("Please enter the name of the list you want to view: ")
+    existing_lists = [file for file in os.listdir() if file.endswith(".txt")]
+    if len(existing_lists) == 0:
+        easygui.msgbox("Currently there are no existing lists, please create a new list first.")
+        create_list_file()
+        return None
+    elif len(existing_lists) == 1:
+        easygui.msgbox(f"Only one list found: {existing_lists[0]}")
+        return existing_lists[0]
+    list_name_to_load = easygui.choicebox("Please choose the list you want to view", "Load List", existing_lists)
     return list_name_to_load
 
 
 # The function to ask the user if they want to add a task to the list, 
 # and call the add task function if they choose yes.
 def add_task_option():
-    choice = ["yes", "no"]
+    choice = ["Yes", "No"]
     add_task_option = easygui.choicebox("Do you want to add a task to this list?", "Add Task", choice)
-    if add_task_option.lower() == "yes":
+    if add_task_option == "Yes":
+        choice = ["Yes", "No"]
         add_task(task_list)
-    elif add_task_option.lower() == "no":
-        print("Skipping add task...")
+        second_task_option = easygui.choicebox("Do you want to add another task to this list?", "Add Task", choice)
+        if second_task_option == "Yes":
+            add_task(task_list)
+        elif second_task_option == "No":
+            easygui.msgbox("Finished adding tasks.")
+            easygui.msgbox(f"Your current tasks: {task_list}")
+            return_to_menu_option()
+        else:
+            easygui.msgbox("Invalid option, returning to menu...")
+            load_menu()
+        save_option = easygui.choicebox("Do you want to save the task list?", choice)
+        if save_option == "Yes":
+            easygui.msgbox("Task list saved.")
+            append_to_file(task_list)
+        elif save_option == "No":
+            easygui.msgbox("Task list is not saved.")
+        else:
+            easygui.msgbox("You have entered an invalid option, task list is not saved.")
+            return_to_menu_option()
+    elif add_task_option == "No":
+        easygui.msgbox("Skipping add task...")
     else:
-        print("Invalid option, returning to menu...")
+        easygui.msgbox("Invalid option, returning to menu...")
         load_menu()
     
     
 # The function to ask the user if they want to delete a task from the list,
 # and call the remove task function if they choose yes.
 def delete_task_option():
-    delete_task_option = input("Do you want to delete a task from this list? (yes/no): ")
-    if delete_task_option.lower() == "yes":
+    choice = ["Yes", "No"]
+    delete_task_option = easygui.choicebox("Do you want to delete a task from this list?", choice)
+    if delete_task_option == "Yes":
         remove_task(task_list)
-    elif delete_task_option.lower() == "no":
-        print("Returning to menu...")
+    elif delete_task_option == "No":
+        easygui.msgbox("Returning to menu...")
         load_menu()
     else:
-        print("Invalid option, returning to menu...")
+        easygui.msgbox("Invalid option, returning to menu...")
         load_menu()
    
     
 # Ask the user to choose if they want to return to the menu or exit the program.
 def return_to_menu_option():
-    return_to_menu = input("Do you want to return to the menu? (yes/no): ")
-    if return_to_menu.lower() == "yes":
+    choice = ["Yes", "No"]
+    return_to_menu = easygui.choicebox("Do you want to return to the menu?", "Return to Menu", choice)
+    if return_to_menu == "Yes":
         load_menu()
-    elif return_to_menu.lower() == "no":
-        print("Exiting...")
+    elif return_to_menu == "No":
+        easygui.msgbox("Exiting...")
     else:
-        print("Invalid option, exiting...")
+        easygui.msgbox("Invalid option, exiting...")
 
 
 # The function to append tasks to the file.
@@ -108,7 +138,7 @@ def create_list_file():
     except FileNotFoundError:
         with open(list_name, "w"):
             pass
-        print(f"List '{list_name}' has been created.")
+        easygui.msgbox(f"List '{list_name}' has been created.")
     add_task_option()
     return_to_menu_option()
     
@@ -120,71 +150,63 @@ def load_list_file():
         with open(list_name, "r") as file:
             task_list = file.read().splitlines()
             if task_list:
-                print(f"Your current tasks: {task_list}")
+                easygui.msgbox(f"Your current tasks are: {task_list}")
             else:
-                print("Your task list is empty.")
+                easygui.msgbox("Your task list is empty.")
             add_task_option()
             delete_task_option()
     except FileNotFoundError:
-        print(f"List '{list_name}' does not exist, please enter a valid list name.")
+        easygui.msgbox(f"List '{list_name}' does not exist, please enter a valid list name.")
         ask_list_name_to_load()
    
  
 # The function to delete an existing list file.
 def delete_list_file():
     global list_name
-    task_to_delete = input("Please enter the name of the list you want to delete: ")
+    task_to_delete = easygui.enterbox("Please enter the name of the list you want to delete: ")
     if task_to_delete == list_name:
         try:
-            remove(list_name)
-            print(f"List '{list_name}' has been deleted.")
+            os.remove(list_name)
+            easygui.msgbox(f"List '{list_name}' has been deleted.")
         except FileNotFoundError:
-            print(f"List '{list_name}' does not exist, please enter a valid list name.")
+            easygui.msgbox(f"List '{list_name}' does not exist, please enter a valid list name.")
             delete_list_file()
 
  
 # The function to add tasks to the tasks list.
 def add_task(task_list):
     # Ask the user to to enter a task.
-    new_task = input("Please enter a task: ")
+    new_task = easygui.enterbox("Please enter a task: ")
     # Add the new task to the task list.
     task_list.append(new_task)
     # Print out a message to tell the user that the task is successfully added.
-    print(f"Task '{new_task}' is now added to the list.")
+    easygui.msgbox(f"Task '{new_task}' is now added to the list.")
     # Print out the current task list.
-    print(f"Your current tasks: {task_list}")
+    easygui.msgbox(f"Your current tasks: {task_list}")
     # Ask the user if they want to save the task list to a file.
-    save_option = input("Do you want to save the task list? (yes/no): ")
-    # If the user choose to save, call the function to append the task list to the file, 
-    # otherwise tell the user the task is not saved.
-    if save_option.lower() == "yes":
-        print("Task list saved.")
-        append_to_file(task_list)
-    elif save_option.lower() == "no":
-        print("Task list is not saved.")
-    else:
-        print("You have entered an invalid option, task list is not saved.")
-    return_to_menu_option()
+    choice = ["Yes", "No"]
+
     
     
 # The function to remove tasks from the task list.    
 def remove_task(task_list):
     # Ask the user for the task they want to remove.
-    task_to_remove = input("Please enter the task you want to remove: ")
+    task_to_remove = easygui.enterbox("Please enter the task you want to remove: ")
     # Check if the task is in the task list and remove it if it is,
     # otherwise print out a message to tell the user the task is not found.
     if task_to_remove in task_list:
         task_list.remove(task_to_remove)
-        print(f"Task '{task_to_remove}' has been removed.")
+        easygui.msgbox(f"Task '{task_to_remove}' has been removed.")
     else:
-        print(f"Task '{task_to_remove}' not found in the list.")
-    print(f"Your current tasks: {task_list}")
+        easygui.msgbox(f"Task '{task_to_remove}' not found in the list.")
+    easygui.msgbox(f"Your current tasks: {task_list}")
     # Ask the user to choose if they want to return to the menu or exit the program.
-    back_to_menu = input("Do you want to return to the menu? (yes/no): ")
-    if back_to_menu == "yes":
+    choice = ["Yes", "No"]
+    back_to_menu = easygui.choicebox("Do you want to return to the menu?", choice)
+    if back_to_menu == "Yes":
         load_menu()
     else:
-        print("Exiting...") 
+        easygui.msgbox("Exiting...") 
             
             
 # The main function to start the program from loading the menu.     
