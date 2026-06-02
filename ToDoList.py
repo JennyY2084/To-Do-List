@@ -1,3 +1,5 @@
+from secrets import choice
+
 import easygui
 import os
 
@@ -55,39 +57,27 @@ def add_task_option():
     choice = ["Yes", "No"]
     add_task_option = easygui.choicebox("Do you want to add a task to this list?", "Add Task", choice)
     if add_task_option == "Yes":
-        choice = ["Yes", "No"]
-        add_task(task_list)
-        second_task_option = easygui.choicebox("Do you want to add another task to this list?", "Add Task", choice)
-        if second_task_option == "Yes":
+        while True:
             add_task(task_list)
-        elif second_task_option == "No":
-            easygui.msgbox("Finished adding tasks.")
-            easygui.msgbox(f"Your current tasks: {task_list}")
-            return_to_menu_option()
-        else:
-            easygui.msgbox("Invalid option, returning to menu...")
-            load_menu()
-        save_option = easygui.choicebox("Do you want to save the task list?", choice)
+            another_task = easygui.choicebox("Do you want to add another task to this list?", "Add Task", choice)
+            if another_task == "No" or another_task is None:
+                break
+        easygui.msgbox("Finished adding tasks.")
+        easygui.msgbox(f"Your current tasks: {task_list}")
+        save_option = easygui.choicebox("Do you want to save the task list?", "Save Task List", choice)
         if save_option == "Yes":
-            easygui.msgbox("Task list saved.")
             append_to_file(task_list)
+            easygui.msgbox("Task list saved.")
         elif save_option == "No":
             easygui.msgbox("Task list is not saved.")
-        else:
-            easygui.msgbox("You have entered an invalid option, task list is not saved.")
             return_to_menu_option()
-    elif add_task_option == "No":
-        easygui.msgbox("Skipping add task...")
-    else:
-        easygui.msgbox("Invalid option, returning to menu...")
-        load_menu()
     
     
 # The function to ask the user if they want to delete a task from the list,
 # and call the remove task function if they choose yes.
 def delete_task_option():
     choice = ["Yes", "No"]
-    delete_task_option = easygui.choicebox("Do you want to delete a task from this list?", choice)
+    delete_task_option = easygui.choicebox("Do you want to delete a task from this list?", "Delete Task", choice)
     if delete_task_option == "Yes":
         remove_task(task_list)
     elif delete_task_option == "No":
