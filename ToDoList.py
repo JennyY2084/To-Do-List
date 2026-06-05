@@ -8,7 +8,8 @@ def load_menu():
     global list_name
     menu_option = ["1. Create a new list", 
                    "2. Load an existing list", 
-                   "3. Delete an existing list", "4. Exit"]
+                   "3. Delete an existing list", 
+                   "4. Exit"]
     title = "To Do List Menu"
     user_option = easygui.choicebox(title, "Please select an option: ", menu_option)
     # Call the corresponding function based on the user's choice, 
@@ -25,7 +26,7 @@ def load_menu():
         easygui.msgbox("Exiting...")
     # Prints out an message to tell te user that they 
     # entered an invalid option and reload the menu.
-    else:
+    else: # If the user closes the window or clicked cancel, it will be seen as an invalid option and reload the menu
         easygui.msgbox("Invalid option, please select either 1, 2, or3.")
         load_menu()
 
@@ -71,6 +72,9 @@ def add_task_option():
         elif save_option == "No":
             easygui.msgbox("Task list is not saved.")
             return_to_menu_option()
+        else: # If the user closes the window or clicked cancel
+            easygui.msgbox("Returning to menu...")
+            load_menu()
     
     
 # The function to ask the user if they want to delete a task from the list,
@@ -83,10 +87,21 @@ def delete_task_option():
     elif delete_task_option == "No":
         easygui.msgbox("Returning to menu...")
         load_menu()
-    else:
-        easygui.msgbox("Invalid option, returning to menu...")
+    else: # If the user closes the window or clicked cancel
+        easygui.msgbox("Returning to menu...")
         load_menu()
    
+def mark_task_as_completed():
+    choice = ["Yes", "No"]
+    mark_completed_option = easygui.choicebox("Do you want to mark a task as completed?", "Mark Task as Completed", choice)
+    if mark_completed_option == "Yes":
+        task_to_mark = easygui.enterbox("Please enter the task you want to mark as completed: ")
+        if task_to_mark in task_list:
+            task_list.remove(task_to_mark)
+            easygui.msgbox(f"Task '{task_to_mark}' has been marked as completed and removed from the list.")
+        else:
+            easygui.msgbox(f"Task '{task_to_mark}' not found in the list.")
+        easygui.msgbox(f"Your current tasks: {task_list}")
     
 # Ask the user to choose if they want to return to the menu or exit the program.
 def return_to_menu_option():
@@ -96,8 +111,8 @@ def return_to_menu_option():
         load_menu()
     elif return_to_menu == "No":
         easygui.msgbox("Exiting...")
-    else:
-        easygui.msgbox("Invalid option, exiting...")
+    else: # If the user closes the window or clicked cancel
+        easygui.msgbox("Exiting...")
 
 
 # The function to append tasks to the file.
