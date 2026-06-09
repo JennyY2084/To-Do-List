@@ -63,6 +63,7 @@ def add_task_option():
                 break
         easygui.msgbox("Finished adding tasks.")
         easygui.msgbox(f"Your current tasks: {task_list}")
+        # Ask the user whether they want to save the task list after adding tasks.
         save_option = easygui.choicebox("Do you want to save the task list?", "Save Task List", choice)
         if save_option == "Yes":
             save_to_file(task_list)
@@ -103,7 +104,7 @@ def mark_task_as_completed():
     choice = ["Yes", "No"]
     mark_completed_option = easygui.choicebox("Do you want to mark a task as completed?", "Mark Task as Completed", choice)
     if mark_completed_option == "Yes":
-        task_to_mark = easygui.enterbox("Please enter the task you want to mark as completed: ")
+        task_to_mark = easygui.enterbox(f"Your current tasks are: {task_list}\n Please enter the task you want to mark as completed: ")
         if task_to_mark in task_list:
             task_list.remove(task_to_mark)
             easygui.msgbox(f"Task '{task_to_mark}' has been marked as completed and removed from the list.")
@@ -156,15 +157,7 @@ def add_task(task_list):
     easygui.msgbox(f"Task '{new_task}' is now added to the list.")
     # Print out the current task list.
     easygui.msgbox(f"Your current tasks: {task_list}")
-    # Ask the user if they want to save the task list to a file.
-    choice = ["Yes", "No"]
-    save_option = easygui.choicebox("Do you want to save the task list?", "Save Task List", choice)
-    if save_option == "Yes":
-        save_to_file(task_list)
-        easygui.msgbox("Task list saved.")
-    elif save_option == "No":
-        easygui.msgbox("Task list is not saved.")
-        return_to_menu_option()
+    
     
     
 # The function to remove tasks from the task list.    
@@ -214,9 +207,9 @@ def load_list_file():
                 easygui.msgbox(f"Your current tasks are: {task_list}")
             else:
                 easygui.msgbox("Your task list is empty.")
+        mark_task_as_completed()
         add_task_option()
         delete_task_option()
-        return_to_menu_option()
     except FileNotFoundError:
         easygui.msgbox(f"List '{list_name}' does not exist, please enter a valid list name.")
         ask_list_name_to_load()
