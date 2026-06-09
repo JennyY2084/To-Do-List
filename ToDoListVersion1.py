@@ -84,11 +84,11 @@ def return_to_menu_option():
         print("Invalid option, exiting...")
 
 
-# The function to append tasks to the file.
-def append_to_file(task_list):
-    with open(list_name, "a") as file:
+# The function to write tasks to the file.
+def save_to_file(task_list):
+    with open(list_name, "w") as file:
         for tasks in task_list:
-            # Append tasks in the task list to the file and add a new line after each task.
+            # Write tasks in the task list to the file and add a new line after each task.
             file.write(tasks + "\n")
             
 # The function to read existing tasks from the file and return them as a string, 
@@ -120,6 +120,7 @@ def create_list_file():
 # The function to load an existing list file and display the current tasks,
 # and ask the user whether they want to add or delete tasks.
 def load_list_file():
+    global task_list
     try:
         with open(list_name, "r") as file:
             task_list = file.read().splitlines()
@@ -128,6 +129,7 @@ def load_list_file():
             else:
                 print("Your task list is empty.")
             add_task_option()
+            mark_task_as_completed()
             delete_task_option()
     except FileNotFoundError:
         print(f"List '{list_name}' does not exist, please enter a valid list name.")
@@ -163,12 +165,13 @@ def add_task(task_list):
     # otherwise tell the user the task is not saved.
     if save_option.lower() == "yes":
         print("Task list saved.")
-        append_to_file(task_list)
+        save_to_file(task_list)
     elif save_option.lower() == "no":
         print("Task list is not saved.")
     else:
         print("You have entered an invalid option, task list is not saved.")
-    return_to_menu_option()
+        print("Returning to menu...")
+        load_menu()
     
     
 # The function to remove tasks from the task list.    
@@ -190,6 +193,17 @@ def remove_task(task_list):
     else:
         print("Exiting...") 
             
+# The function to ask the user if they want to mark a task as completed
+def mark_task_as_completed():
+    mark_completed_option = input("Do you want to mark a task as completed? Yes/No: ")
+    if mark_completed_option.lower() == "yes":
+        task_to_mark = input("Please enter the task you want to mark as completed: ")
+        if task_to_mark in task_list:
+            task_list.remove(task_to_mark)
+            print(f"Task '{task_to_mark}' has been marked as completed and removed from the list.")
+        else:
+            print(f"Task '{task_to_mark}' not found in the list.")
+        print(f"Your current tasks: {task_list}")
             
 # The main function to start the program from loading the menu.     
 def main():
