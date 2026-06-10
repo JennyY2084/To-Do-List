@@ -80,6 +80,7 @@ def return_to_menu_option():
         load_menu()
     elif return_to_menu.lower() == "no":
         print("Exiting...")
+        return None
     else:
         print("Invalid option, exiting...")
 
