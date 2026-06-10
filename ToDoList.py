@@ -109,13 +109,15 @@ def mark_task_as_completed():
     mark_completed_option = easygui.choicebox("Do you want to mark a task as completed?", "Mark Task as Completed", choice)
     while True:
         if mark_completed_option == "Yes":
-            task_to_mark = easygui.enterbox(f"Your current tasks are: {task_list}\n Please enter the task you want to mark as completed: ")
+            task_to_mark = easygui.enterbox(f"Your current tasks are: {task_list}\nPlease enter the task you want to mark as completed: ")
+            if not task_to_mark:
+                break
+            task_to_mark = task_to_mark.strip()
             if task_to_mark in task_list:
                 task_list.remove(task_to_mark)
-            easygui.msgbox(f"Task '{task_to_mark}' has been marked as completed and removed from the list.")
-        else:
-            easygui.msgbox(f"Task '{task_to_mark}' not found in the list.")
-            easygui.msgbox(f"Your current tasks: {task_list}")
+                easygui.msgbox(f"Task '{task_to_mark}' has been marked as completed and removed from the list.")
+            else:
+                easygui.msgbox(f"Task '{task_to_mark}' not found in the list.")
         mark_another_task = easygui.choicebox("Do you want to mark another task as completed?", "Mark Task as Completed", choice)
         if mark_another_task == "No" or mark_another_task is None:
             break
@@ -227,7 +229,7 @@ def load_list_file():
    
  
 # The function to delete an existing list file.
-def delete_list_file(task_list):
+def delete_list_file():
     choice = ["Yes", "No"]
     delete_option = easygui.choicebox("Do you want to delete a task?", "Delete Task", choice )
     if delete_option == "Yes":
