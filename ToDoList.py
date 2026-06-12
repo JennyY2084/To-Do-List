@@ -19,13 +19,14 @@ def load_menu():
         list_name = ask_list_name_to_load()
         load_list_file()
     elif user_option == "3. Delete an existing list":
+        list_name = list_option_to_delete()
         delete_list_file()
     elif user_option == "4. Exit":
         easygui.msgbox("Exiting...")
     # Prints out an message to tell te user that they 
     # entered an invalid option and reload the menu.
     else: # If the user closes the window or clicked cancel, it will be seen as an invalid option and reload the menu
-        easygui.msgbox("Invalid option, please select either 1, 2, or3.")
+        easygui.msgbox("Invalid option, please select either 1, 2, 3 or 4.")
         load_menu()
 
 
@@ -52,6 +53,18 @@ def ask_list_name_to_load():
         return existing_lists[0]
     list_name_to_load = easygui.choicebox("Please choose the list you want to view", "Load List", existing_lists)
     return list_name_to_load
+
+def list_option_to_delete():
+    existing_lists = [file for file in os.listdir() if file.endswith(".txt")]
+    if len(existing_lists) == 0:
+        easygui.msgbox("Currently there are no existing lists, please create a new list first.")
+        create_list_file()
+        return None
+    elif len(existing_lists) == 1:
+        easygui.msgbox(f"Only one list found: {existing_lists[0]}")
+        return existing_lists[0]
+    list_name_to_delete = easygui.choicebox("Please choose the list you want to delete", "Delete List", existing_lists)
+    return list_name_to_delete
 
 
 # The function to ask the user if they want to add a task to the list, 
@@ -130,8 +143,10 @@ def return_to_menu_option():
         load_menu()
     elif return_to_menu == "No":
         easygui.msgbox("Exiting...")
+        return None
     else: # If the user closes the window or clicked cancel
         easygui.msgbox("Exiting...")
+        return None
 
 
 # The function to append tasks to the file.
@@ -231,10 +246,24 @@ def load_list_file():
 # The function to delete an existing list file.
 def delete_list_file():
     choice = ["Yes", "No"]
-    delete_option = easygui.choicebox("Do you want to delete a task?", "Delete Task", choice )
-    if delete_option == "Yes":
-        remove_task(task_list)
-
+    if list_name:
+        os.remove(list_name)
+        easygui.msgbox(f"List '{list_name}' has been deleted.")
+        delete_another = easygui.choicebox("Do you want to delete another list?", "Delete List", choice)
+        if delete_another == "Yes":
+            delete_list_file()
+        elif delete_another == "No":
+            return_to_menu_option()
+        else: # If the user closes the window or clicked cancel, it will be seen as an empty input and return to menu.
+            easygui.msgbox("Exiting...")
+            return None
+    elif list_name is None: # If the user closes the window or clicked cancel, it will be seen as an empty input and return to menu.
+        load_menu()
+        return None
+    else:
+        easygui.msgbox("No list is selected for deletion.")
+        return_to_menu_option()
+    
  
 # The main function to start the program from loading the menu.     
 def main():
