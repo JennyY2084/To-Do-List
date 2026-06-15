@@ -229,9 +229,12 @@ def remove_task(task_list):
     task_to_remove = easygui.enterbox(f"Your current tasks are: {task_list}\n Please enter the task you want to remove: ")
     # Check if the task is in the task list and remove it if it is,
     # otherwise print out a message to tell the user the task is not found.
+    if task_to_remove is None: # If the user closes the window or clicked cancel
+        easygui.msgbox("Exiting...")
+        return None
     if not task_to_remove:
+        easygui.msgbox("Task cannot be empty, please enter a valid task.")
         return
-    task_to_remove = task_to_remove.strip()
     if task_to_remove in task_list:
         task_list.remove(task_to_remove)
         easygui.msgbox(f"Task '{task_to_remove}' has been removed.")
@@ -249,7 +252,11 @@ def create_list_file():
                 new_name = easygui.enterbox(
                     f"List '{list_name}' already exists.\nPlease enter a different name:")
             if new_name is None:
-                return
+                easygui.msgbox("Exiting...")
+                return None
+            elif not new_name:
+                easygui.msgbox("List name cannot be empty, please enter a valid name.")
+                continue
             list_name = new_name + ".txt"
         except FileNotFoundError:
             break
@@ -292,11 +299,11 @@ def delete_list_file():
             delete_list_file()
         elif delete_another == "No":
             return_to_menu_option()
-        else: # If the user closes the window or clicked cancel, it will be seen as an empty input and return to menu.
+        else: # If the user closes the window or clicked cancel
             easygui.msgbox("Exiting...")
             return None
-    elif list_name is None: # If the user closes the window or clicked cancel, it will be seen as an empty input and return to menu.
-        load_menu()
+    elif list_name is None: # If the user closes the window or clicked cancel
+        easygui.msgbox("Exiting...")
         return None
     else:
         easygui.msgbox("No list is selected for deletion.")
