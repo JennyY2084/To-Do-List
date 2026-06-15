@@ -26,11 +26,12 @@ def load_menu():
         delete_list_file()
     elif user_option == "4":
         print("Exiting...")
+        return None
     # Prints out an message to tell te user that they 
     # entered an invalid option and reload the menu.
     else:
         print("Invalid option, please select either 1, 2, or3.")
-        load_menu()
+        return
 
 
 # Create an empty list to store the user's tasks.
@@ -66,23 +67,23 @@ def delete_task_option():
     if delete_task_option.lower() == "yes":
         remove_task(task_list)
     elif delete_task_option.lower() == "no":
-        print("Returning to menu...")
-        load_menu()
+        print("Skipping delete task...")
     else:
         print("Invalid option, returning to menu...")
-        load_menu()
+        return
    
     
 # Ask the user to choose if they want to return to the menu or exit the program.
 def return_to_menu_option():
     return_to_menu = input("Do you want to return to the menu? (yes/no): ")
     if return_to_menu.lower() == "yes":
-        load_menu()
+        return
     elif return_to_menu.lower() == "no":
         print("Exiting...")
         return None
     else:
         print("Invalid option, exiting...")
+        return None
 
 
 # The function to write tasks to the file.
@@ -132,6 +133,7 @@ def load_list_file():
             add_task_option()
             mark_task_as_completed()
             delete_task_option()
+            return_to_menu_option()
     except FileNotFoundError:
         print(f"List '{list_name}' does not exist, please enter a valid list name.")
         ask_list_name_to_load()
@@ -143,7 +145,7 @@ def delete_list_file():
     task_to_delete = input("Please enter the name of the list you want to delete: ")
     if task_to_delete == list_name:
         try:
-            remove(list_name)
+            remove(task_to_delete)
             print(f"List '{list_name}' has been deleted.")
         except FileNotFoundError:
             print(f"List '{list_name}' does not exist, please enter a valid list name.")
@@ -172,7 +174,7 @@ def add_task(task_list):
     else:
         print("You have entered an invalid option, task list is not saved.")
         print("Returning to menu...")
-        load_menu()
+        return
     
     
 # The function to remove tasks from the task list.    
@@ -184,15 +186,11 @@ def remove_task(task_list):
     if task_to_remove in task_list:
         task_list.remove(task_to_remove)
         print(f"Task '{task_to_remove}' has been removed.")
+        save_to_file(task_list)
     else:
         print(f"Task '{task_to_remove}' not found in the list.")
     print(f"Your current tasks: {task_list}")
-    # Ask the user to choose if they want to return to the menu or exit the program.
-    back_to_menu = input("Do you want to return to the menu? (yes/no): ")
-    if back_to_menu == "yes":
-        load_menu()
-    else:
-        print("Exiting...") 
+    return_to_menu_option()
             
 # The function to ask the user if they want to mark a task as completed
 def mark_task_as_completed():
@@ -201,14 +199,22 @@ def mark_task_as_completed():
         task_to_mark = input("Please enter the task you want to mark as completed: ")
         if task_to_mark in task_list:
             task_list.remove(task_to_mark)
+            save_to_file(task_list)
             print(f"Task '{task_to_mark}' has been marked as completed and removed from the list.")
         else:
             print(f"Task '{task_to_mark}' not found in the list.")
         print(f"Your current tasks: {task_list}")
-            
+        return None
+    elif mark_completed_option.lower() == "no":
+        print("Skipping mark task as completed...")
+    else:
+        print("Invalid option, returning to menu...")
+        return
+    
 # The main function to start the program from loading the menu.     
 def main():
-   load_menu()
+   while True:
+       load_menu()
 
 
 # Call the main function to start the program.
