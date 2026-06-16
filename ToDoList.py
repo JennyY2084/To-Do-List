@@ -27,7 +27,7 @@ def load_menu():
         delete_list_file()
     elif user_option == "4":
         print("Exiting...")
-        return None
+        exit()
     # Prints out an message to tell te user that they 
     # entered an invalid option and reload the menu.
     else:
@@ -141,7 +141,9 @@ def load_list_file():
             return_to_menu_option()
     except FileNotFoundError:
         print(f"List '{list_name}' does not exist, please enter a valid list name.")
-        ask_list_name_to_load()
+        list_name = ask_list_name_to_load()
+        load_list_file()
+        
    
  
 # The function to delete an existing list file.
