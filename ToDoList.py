@@ -23,6 +23,7 @@ def load_menu():
         list_name = ask_list_name_to_load()
         load_list_file()
     elif user_option == "3":
+        list_name = ask_list_name_to_delete()
         delete_list_file()
     elif user_option == "4":
         print("Exiting...")
@@ -45,6 +46,9 @@ def ask_list_name_to_create():
 def ask_list_name_to_load():
     list_name_to_load = input("Please enter the name of the list you want to view: ")
     return list_name_to_load
+def ask_list_name_to_delete():
+    list_name_to_delete = input("Please enter the name of the list you want to delete: ")
+    return list_name_to_delete
 
 
 # The function to ask the user if they want to add a task to the list, 
@@ -123,6 +127,7 @@ def create_list_file():
 # and ask the user whether they want to add or delete tasks.
 def load_list_file():
     global task_list
+    global list_name
     try:
         with open(list_name, "r") as file:
             task_list = file.read().splitlines()
@@ -142,10 +147,9 @@ def load_list_file():
 # The function to delete an existing list file.
 def delete_list_file():
     global list_name
-    task_to_delete = input("Please enter the name of the list you want to delete: ")
-    if task_to_delete == list_name:
+    if list_name == list_name:
         try:
-            remove(task_to_delete)
+            remove(list_name)
             print(f"List '{list_name}' has been deleted.")
         except FileNotFoundError:
             print(f"List '{list_name}' does not exist, please enter a valid list name.")
