@@ -85,13 +85,15 @@ def add_task_option():
     add_task_option = easygui.choicebox("Do you want to add a task to this list?", "Add Task", choice)
     if add_task_option == "Yes":
         while True:
-            add_task(task_list)
+            if add_task(task_list) == False:
+                easygui.msgbox("Exiting...")
+                return False
             another_task = easygui.choicebox("Do you want to add another task to this list?", "Add Task", choice)
-            if another_task == "No" or another_task is None:
+            if another_task == "No":
                 break
             elif another_task is None: # If the user closes the window or clicked cancel.
                 easygui.msgbox("Exiting...")
-                return None
+                return False
         easygui.msgbox("Finished adding tasks.")
         easygui.msgbox(f"Your current tasks: {task_list}")
         # Ask the user whether they want to save the task list after adding tasks.
@@ -99,12 +101,19 @@ def add_task_option():
         if save_option == "Yes":
             save_to_file(task_list)
             easygui.msgbox("Task list saved.")
+            return True
         elif save_option == "No":
             easygui.msgbox("Task list is not saved.")
             return_to_menu_option()
         else: # If the user closes the window or clicked cancel.
             easygui.msgbox("Exiting...")
-            return None
+            return False
+    elif add_task_option == "No":
+        easygui.msgbox("Skipping adding tasks.")
+        return True
+    else:
+        easygui.msgbox("Exiting...")
+        return False
     
     
 # The function to ask the user if they want to delete a task from the list,
@@ -114,13 +123,14 @@ def delete_task_option():
     delete_task_option = easygui.choicebox("Do you want to delete a task from this list?", "Delete Task", choice)
     if delete_task_option == "Yes":
         while True:
-            remove_task(task_list)
+            if remove_task(task_list) == False:
+                easygui.msgbox("Exiting...")
+                return False
             remove_another_task = easygui.choicebox("Do you want to delete another task from this list?", "Delete Task", choice)
             if remove_another_task == "No":
                 break
             else: # If the user closes the window or clicked cancel.
-                easygui.msgbox("Exiting...")
-                return None
+                return False
         easygui.msgbox("Finished deleting tasks.")
         easygui.msgbox(f"Your current tasks: {task_list}")
         save_option = easygui.choicebox("Do you want to save the task list?", "Save Task List", choice)
@@ -128,12 +138,20 @@ def delete_task_option():
             save_to_file(task_list)
             easygui.msgbox("Task list saved.")
             return_to_menu_option()
+            return True
         elif save_option == "No":
             easygui.msgbox("Task list is not saved.")
             return_to_menu_option()
+            return True
         else: # If the user closes the window or clicked cancel.
             easygui.msgbox("Task list is not saved. \nExiting...")
-            return None
+            return False
+    elif delete_task_option == "No":
+        easygui.msgbox("Skipping deleting tasks.")
+        return True
+    else:
+        easygui.msgbox("Exiting...")
+        return False
     
    
 # The function to ask the user if they want to mark a task as completed
@@ -144,7 +162,6 @@ def mark_task_as_completed():
         if mark_completed_option == "Yes":
             task_to_mark = easygui.enterbox(f"Your current tasks are: {task_list}\nPlease enter the task you want to mark as completed: ")
             if task_to_mark is None: # If the user closes the window or clicked cancel.
-                easygui.msgbox("Exiting...")
                 return False
             elif not task_to_mark: # If the user enters nothing and clicked ok,
                 easygui.msgbox("Task cannot be empty, please enter a valid task.")
@@ -157,17 +174,19 @@ def mark_task_as_completed():
                 continue
         elif mark_completed_option == "No":
             easygui.msgbox("Skipping marking tasks as completed.")
-            break
+            return True
         else: # If the user closes the window or clicked cancel.
             easygui.msgbox("Exiting...")
-            return None
+            return False
         mark_another_task = easygui.choicebox("Do you want to mark another task as completed?", "Mark Task as Completed", choice)
-        if mark_another_task == "No":
+        if mark_another_task == "Yes":
+            continue
+        elif mark_another_task == "No":
             easygui.msgbox("Finished marking tasks as completed.")
-            return None
+            return True
         else: # If the user closes the window or clicked cancel.
             easygui.msgbox("Exiting...")
-            return None
+            return False
     
         
     
@@ -176,13 +195,13 @@ def return_to_menu_option():
     choice = ["Yes", "No"]
     return_to_menu = easygui.choicebox("Do you want to return to the menu?", "Return to Menu", choice)
     if return_to_menu == "Yes":
-        load_menu()
+        return True
     elif return_to_menu == "No":
         easygui.msgbox("Exiting...")
-        return None
+        return False
     else: # If the user closes the window or clicked cancel
         easygui.msgbox("Exiting...")
-        return None
+        return False
 
 
 # The function to append tasks to the file.
@@ -206,7 +225,7 @@ def add_task(task_list):
     while True:
         new_task = easygui.enterbox("Please enter a task: ")
         if new_task is None: # If the user closes the window or clicked cancel, it will be seen as an empty input and return to menu.
-            return None
+            return False
         elif not new_task:
                 easygui.msgbox("Task cannot be empty, please enter a valid task.")
                 continue
@@ -233,7 +252,7 @@ def remove_task(task_list):
     # otherwise print out a message to tell the user the task is not found.
     if task_to_remove is None: # If the user closes the window or clicked cancel
         easygui.msgbox("Exiting...")
-        return None
+        return False
     if not task_to_remove:
         easygui.msgbox("Task cannot be empty, please enter a valid task.")
         return
@@ -269,7 +288,9 @@ def create_list_file():
     easygui.msgbox(f"List '{list_name}' has been created.")
     add_task_option()
     if len(task_list) > 0:
-        mark_task_as_completed()
+        if mark_task_as_completed() == False:
+            easygui.msgbox("Exiting...")
+            return None
     return_to_menu_option()
     
     
@@ -284,11 +305,12 @@ def load_list_file():
                 easygui.msgbox(f"Your current tasks are: {task_list}")
             else:
                 easygui.msgbox("Your task list is empty.")
-        mark_task_as_completed()
         if mark_task_as_completed() == False:
-            return
-        add_task_option()
-        delete_task_option()
+            return False
+        if add_task_option() == False:
+            return False
+        if delete_task_option() == False:
+            return False
     except FileNotFoundError:
         easygui.msgbox(f"List '{list_name}' does not exist, please enter a valid list name.")
         list_option_to_load()
