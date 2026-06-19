@@ -247,28 +247,31 @@ def add_task(task_list):
 # The function to remove tasks from the task list.    
 def remove_task(task_list):
     # Ask the user for the task they want to remove.
-    task_to_remove = easygui.enterbox(f"Your current tasks are: {task_list}\n Please enter the task you want to remove: ")
-    # Check if the task is in the task list and remove it if it is,
-    # otherwise print out a message to tell the user the task is not found.
-    if task_to_remove is None: # If the user closes the window or clicked cancel
-        easygui.msgbox("Exiting...")
-        return False
-    if not task_to_remove:
-        easygui.msgbox("Task cannot be empty, please enter a valid task.")
-        return
-    if task_to_remove in task_list:
-        task_list.remove(task_to_remove)
-        easygui.msgbox(f"Task '{task_to_remove}' has been removed.")
-    else:
-        easygui.msgbox(f"Task '{task_to_remove}' not found in the list, please enter a valid task.")
-        remove_task(task_list)
-    # Print out the current task list after removing the task.
-    easygui.msgbox(f"Your current tasks: {task_list}")
+    while True: 
+        task_to_remove = easygui.enterbox(f"Your current tasks are: {task_list}\n Please enter the task you want to remove: ")
+        # Check if the task is in the task list and remove it if it is,
+        # otherwise print out a message to tell the user the task is not found.
+        if task_to_remove is None: # If the user closes the window or clicked cancel
+            easygui.msgbox("Exiting...")
+            return False
+        if not task_to_remove:
+            easygui.msgbox("Task cannot be empty, please enter a valid task.")
+            continue
+        if task_to_remove in task_list:
+            task_list.remove(task_to_remove)
+            easygui.msgbox(f"Task '{task_to_remove}' has been removed.")
+        else:
+            easygui.msgbox(f"Task '{task_to_remove}' not found in the list, please enter a valid task.")
+            remove_task(task_list)
+        # Print out the current task list after removing the task.
+        easygui.msgbox(f"Your current tasks: {task_list}")
 
 
 # The function to create a new list file.
 def create_list_file():
     global list_name
+    global task_list
+    task_list = []
     while True:
         try:
             with open(list_name, "r"):
