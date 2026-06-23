@@ -120,31 +120,28 @@ def add_task_option():
 # and call the remove task function if they choose yes.
 def delete_task_option():
     choice = ["Yes", "No"]
-    delete_task_option = easygui.choicebox("Do you want to delete a task from this list?", "Delete Task", choice)
+    delete_task_option = easygui.choicebox(
+        "Do you want to delete a task from this list?", "Delete Task", choice)
     if delete_task_option == "Yes":
-        while True:
-            if remove_task(task_list) == False:
-                easygui.msgbox("Exiting...")
-                return False
-            remove_another_task = easygui.choicebox("Do you want to delete another task from this list?", "Delete Task", choice)
-            if remove_another_task == "No":
-                break
-            else: # If the user closes the window or clicked cancel.
-                return False
+        if remove_task(task_list) == False:
+            easygui.msgbox("Exiting...")
+            return False
         easygui.msgbox("Finished deleting tasks.")
         easygui.msgbox(f"Your current tasks: {task_list}")
-        save_option = easygui.choicebox("Do you want to save the task list?", "Save Task List", choice)
+        save_option = easygui.choicebox(
+            "Do you want to save the task list?",
+            "Save Task List",
+            choice
+        )
         if save_option == "Yes":
             save_to_file(task_list)
             easygui.msgbox("Task list saved.")
-            return_to_menu_option()
             return True
         elif save_option == "No":
             easygui.msgbox("Task list is not saved.")
-            return_to_menu_option()
             return True
-        else: # If the user closes the window or clicked cancel.
-            easygui.msgbox("Task list is not saved. \nExiting...")
+        else:
+            easygui.msgbox("Exiting...")
             return False
     elif delete_task_option == "No":
         easygui.msgbox("Skipping deleting tasks.")
@@ -234,24 +231,17 @@ def add_task(task_list):
 # The function to remove tasks from the task list.    
 def remove_task(task_list):
     # Ask the user for the task they want to remove.
-    while True: 
-        task_to_remove = easygui.enterbox(f"Your current tasks are: {task_list}\n Please enter the task you want to remove: ")
-        # Check if the task is in the task list and remove it if it is,
-        # otherwise print out a message to tell the user the task is not found.
-        if task_to_remove is None: # If the user closes the window or clicked cancel
-            easygui.msgbox("Exiting...")
-            return False
-        if not task_to_remove:
-            easygui.msgbox("Task cannot be empty, please enter a valid task.")
-            continue
-        if task_to_remove in task_list:
-            task_list.remove(task_to_remove)
-            easygui.msgbox(f"Task '{task_to_remove}' has been removed.")
-        else:
-            easygui.msgbox(f"Task '{task_to_remove}' not found in the list, please enter a valid task.")
-            remove_task(task_list)
-        # Print out the current task list after removing the task.
-        easygui.msgbox(f"Your current tasks: {task_list}")
+    if not task_list:
+        easygui.msgbox("Your task list is empty.")
+        return True
+    task_to_remove = easygui.multichoicebox("Please tick the task you want to delete: ", "Delete Task", task_list)
+    if task_to_remove is None: # If the user closes the window or clicked cancel
+        return False
+    # Remove the chosen tasks from the task list
+    for task in task_to_remove:
+        task_list.remove(task)
+    easygui.msgbox(f"Task(s) '{task_to_remove}' has been removed from the list.")
+    easygui.msgbox(f"Your current tasks: {task_list}")
 
 
 # The function to create a new list file.
