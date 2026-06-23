@@ -158,35 +158,22 @@ def delete_task_option():
 def mark_task_as_completed():
     choice = ["Yes", "No"]
     mark_completed_option = easygui.choicebox("Do you want to mark a task as completed?", "Mark Task as Completed", choice)
-    while True:
-        if mark_completed_option == "Yes":
-            task_to_mark = easygui.enterbox(f"Your current tasks are: {task_list}\nPlease enter the task you want to mark as completed: ")
-            if task_to_mark is None: # If the user closes the window or clicked cancel.
-                return False
-            elif not task_to_mark: # If the user enters nothing and clicked ok,
-                easygui.msgbox("Task cannot be empty, please enter a valid task.")
-                continue
-            if task_to_mark in task_list:
-                task_list.remove(task_to_mark)
-                easygui.msgbox(f"Task '{task_to_mark}' has been marked as completed and removed from the list.")
-            else:
-                easygui.msgbox(f"Task '{task_to_mark}' is not found in the list, please enter a valid task.")
-                continue
-        elif mark_completed_option == "No":
-            easygui.msgbox("Skipping marking tasks as completed.")
+    while mark_completed_option == "Yes":
+        if not task_list:
+            easygui.msgbox("Your task list is empty.")
             return True
-        else: # If the user closes the window or clicked cancel.
+        completed_tasks = easygui.multchoicebox("Please tick the tasks you have completed: ", "Mark task as completed", task_list)
+        if completed_tasks is None:
             easygui.msgbox("Exiting...")
             return False
-        mark_another_task = easygui.choicebox("Do you want to mark another task as completed?", "Mark Task as Completed", choice)
-        if mark_another_task == "Yes":
-            continue
-        elif mark_another_task == "No":
-            easygui.msgbox("Finished marking tasks as completed.")
-            return True
-        else: # If the user closes the window or clicked cancel.
-            easygui.msgbox("Exiting...")
-            return False
+        for task in completed_tasks:
+            task_list.remove(task)
+        easygui.msgbox(f"Remaining tasks: {task_list}")
+        return True
+    if mark_completed_option == "No":
+        easygui.msgbox("Skipping marking tasks as completed.")
+        return True
+            
     
         
     
