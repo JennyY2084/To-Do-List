@@ -1,3 +1,5 @@
+# This is Version 1
+
 from os import remove
 
 # The function to load the menu and ask the user to input an option.
