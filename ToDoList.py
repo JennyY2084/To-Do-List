@@ -120,9 +120,9 @@ def add_task_option():
 # and call the remove task function if they choose yes.
 def delete_task_option():
     choice = ["Yes", "No"]
-    delete_task_option = easygui.choicebox(
+    delete_choice = easygui.choicebox(
         "Do you want to delete a task from this list?", "Delete Task", choice)
-    if delete_task_option == "Yes":
+    if delete_choice == "Yes":
         if remove_task(task_list) == False:
             easygui.msgbox("Exiting...")
             return False
@@ -143,7 +143,7 @@ def delete_task_option():
         else:
             easygui.msgbox("Exiting...")
             return False
-    elif delete_task_option == "No":
+    elif delete_choice == "No":
         easygui.msgbox("Skipping deleting tasks.")
         return True
     else:
@@ -234,7 +234,7 @@ def remove_task(task_list):
     if not task_list:
         easygui.msgbox("Your task list is empty.")
         return True
-    task_to_remove = easygui.multichoicebox("Please tick the task you want to delete: ", "Delete Task", task_list)
+    task_to_remove = easygui.multchoicebox("Please tick the task you want to delete: ", "Delete Task", task_list)
     if task_to_remove is None: # If the user closes the window or clicked cancel
         return False
     # Remove the chosen tasks from the task list
@@ -242,6 +242,7 @@ def remove_task(task_list):
         task_list.remove(task)
     easygui.msgbox(f"Task(s) '{task_to_remove}' has been removed from the list.")
     easygui.msgbox(f"Your current tasks: {task_list}")
+    return True
 
 
 # The function to create a new list file.
