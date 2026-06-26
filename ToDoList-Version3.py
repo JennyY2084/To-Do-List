@@ -106,7 +106,7 @@ def add_task_option():
             return True
         elif save_option == "No":
             easygui.msgbox("Task list is not saved.")
-            return_to_menu_option()
+            load_menu()
         else: # If the user closes the window or clicked cancel.
             easygui.msgbox("Exiting...")
             return False
@@ -172,22 +172,6 @@ def mark_task_as_completed():
     if mark_completed_option == "No":
         easygui.msgbox("Skipping marking tasks as completed.")
         return True
-            
-    
-        
-    
-# Ask the user to choose if they want to return to the menu or exit the program.
-def return_to_menu_option():
-    choice = ["Yes", "No"]
-    return_to_menu = easygui.choicebox("Do you want to return to the menu?", "Return to Menu", choice)
-    if return_to_menu == "Yes":
-        return True
-    elif return_to_menu == "No":
-        easygui.msgbox("Exiting...")
-        return False
-    else: # If the user closes the window or clicked cancel
-        easygui.msgbox("Exiting...")
-        return False
 
 
 # The function to append tasks to the file.
@@ -274,7 +258,7 @@ def create_list_file():
         if mark_task_as_completed() == False:
             easygui.msgbox("Exiting...")
             return None
-    return_to_menu_option()
+    load_menu()
     
     
 # The function to load an existing list file and display the current tasks,
@@ -309,7 +293,7 @@ def delete_list_file():
         if delete_another == "Yes":
             delete_list_file()
         elif delete_another == "No":
-            return_to_menu_option()
+            load_menu()
         else: # If the user closes the window or clicked cancel
             easygui.msgbox("Exiting...")
             return None
@@ -318,7 +302,7 @@ def delete_list_file():
         return None
     else:
         easygui.msgbox("No list is selected for deletion.")
-        return_to_menu_option()
+        load_menu()
     
  
 # The main function to start the program from loading the menu.     
