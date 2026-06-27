@@ -107,20 +107,6 @@ def add_task_option():
             else: # If the user closes the window or clicked cancel.
                 easygui.msgbox("Exiting...")
                 return False
-        easygui.msgbox("Finished adding tasks.")
-        easygui.msgbox(f"Your current tasks: {task_list}")
-        # Ask the user whether they want to save the task list after adding tasks.
-        save_option = easygui.choicebox("Do you want to save the task list?", "Save Task List", choice)
-        if save_option == "Yes":
-            save_to_file(task_list)
-            easygui.msgbox("Task list saved.")
-            return True
-        elif save_option == "No":
-            easygui.msgbox("Task list is not saved.")
-            load_menu()
-        else: # If the user closes the window or clicked cancel.
-            easygui.msgbox("Exiting...")
-            return False
     elif add_task_option == "No":
         easygui.msgbox("Skipping adding tasks.")
         return True
