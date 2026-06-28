@@ -88,6 +88,16 @@ def mark_task_as_completed():
     if not incomplete_tasks:
         easygui.msgbox("There are no incomplete tasks to mark")
         return True
+    if len(incomplete_tasks) == 0:
+        easygui.msgbox("There are no imcomplete tasks to mark")
+        return True
+    elif len(incomplete_tasks) == 1:
+        for i in range(len(task_list)):
+            if task_list[i] == incomplete_tasks[0]:
+                task_list[i] += "✅"
+        easygui.msgbox(f"Only '{incomplete_tasks[0]}' exists in this list.\n'{incomplete_tasks[0]}' has been marked as completed")
+        save_option()
+        return True
     # Present the user with a list of tasks to choose from, 
     # and allow them to select multiple tasks to mark as completed.
     selected_tasks = easygui.multchoicebox("Please tick the tasks you have completed: ", "Mark task as completed", incomplete_tasks)
