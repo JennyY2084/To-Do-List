@@ -78,30 +78,6 @@ def list_option_to_delete():
         return None
     return list_name_to_delete
 
-    choice = ["No", "Yes"]
-    add_task_option = easygui.buttonbox("Do you want to add a task to this list?", "Add Task", choice)
-    if add_task_option == "Yes":
-        while True:
-            if add_task(task_list) == False:
-                return False
-            easygui.msgbox("Finished adding tasks.")
-            easygui.msgbox(f"Your current tasks: {task_list}")
-            # Ask the user whether they want to save the task list after adding tasks.
-            save_option = easygui.buttonbox("Do you want to save the task list?", "Save Task List", choice)
-            if save_option == "Yes":
-                save_to_file(task_list)
-                easygui.msgbox("Task list saved.")
-                return True
-            elif save_option == "No":
-                easygui.msgbox("Task list is not saved.")
-                return True
-            else: # If the user closes the window or clicked cancel.
-                return False
-    elif add_task_option == "No":
-        easygui.msgbox("Skipping adding tasks.")
-        return True
-    else:
-        return False
     
     
 # The function to ask the user if they want to mark a task as completed
@@ -269,6 +245,7 @@ def load_list_file():
                 for task in incomplete_tasks:
                     message += task + "\n"
             easygui.msgbox(message)
+            
         while True:
             # Load the menu without mark task as complete and delete task option
             # when there are no existing tasks in the list.
@@ -283,6 +260,7 @@ def load_list_file():
                     break
                 else: # If the user clicked cancel or closes the window
                     break
+                
             else:
                 # Load the full version of the menu when there are existing tasks in the list.
                 menu = ["Add Task", "Delete Task", "Mark Task", "Exit"]
@@ -301,6 +279,7 @@ def load_list_file():
                 else:
                     break
         return True
+    
     except FileNotFoundError:
         easygui.msgbox(f"List '{list_name}' does not exist, please enter a valid list name.")
     return True
