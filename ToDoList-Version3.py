@@ -27,8 +27,6 @@ def load_menu():
     elif user_option == "4. Exit":
         easygui.msgbox("Exiting...")
         return "EXIT"
-    # Prints out an message to tell te user that they 
-    # entered an invalid option and reload the menu.
     else: # If the user closes the window or clicked cancel.
         return None
 
@@ -37,25 +35,27 @@ def load_menu():
 task_list = []
 
 
-# Ask the user to enter the name of the list they want to create and return the name.
+# Ask the user to choose the list they want to create and return the name.
 def ask_list_name_to_create():
     list_name_to_create = easygui.enterbox("Please enter the name of the list you want to create: ")
     if list_name_to_create is None: # If the user closes the window or clicked cancel.
         return None
-    elif not list_name_to_create: # If the user enters nothing and clicked ok,
+    elif not list_name_to_create: # If the user chooses nothing and clicked ok,
         # it will be seen as an empty input and ask the user again for the list name.
         easygui.msgbox("List name cannot be empty, please enter a valid name.")
         return ask_list_name_to_create()
     return list_name_to_create + ".txt"
 
 
-# Ask the user to enter the name of the list they want to load and return the name.
+# Ask the user to choose the list they want to load and return the name.
 def list_option_to_load():
     existing_lists = [file for file in os.listdir() if file.endswith(".txt")]
+    # Check whether there are existing lists
     if len(existing_lists) == 0:
         easygui.msgbox("Currently there are no existing lists, please create a new list first.")
         create_list_file()
         return None
+    # If there are only one existing list, this list will be returned
     elif len(existing_lists) == 1:
         easygui.msgbox(f"Only one list found: {existing_lists[0]}")
         return existing_lists[0]
@@ -88,14 +88,17 @@ def mark_task_as_completed():
     if not incomplete_tasks:
         easygui.msgbox("There are no incomplete tasks to mark")
         return True
+    # Check whether there are incomplete tasks to mark
     if len(incomplete_tasks) == 0:
-        easygui.msgbox("There are no imcomplete tasks to mark")
+        easygui.msgbox("There are no incomplete tasks to mark")
         return True
+    # If there are only one incomplete task in the list, it will be marked automatically
     elif len(incomplete_tasks) == 1:
         for i in range(len(task_list)):
             if task_list[i] == incomplete_tasks[0]:
                 task_list[i] += "✅"
         easygui.msgbox(f"Only '{incomplete_tasks[0]}' exists in this list.\n'{incomplete_tasks[0]}' has been marked as completed")
+        # Ask the user whether they want to save the list
         save_option()
         return True
     # Present the user with a list of tasks to choose from, 
@@ -104,6 +107,7 @@ def mark_task_as_completed():
     if selected_tasks is None:
         return None
     for i in range(len(task_list)):
+        # Add ✅ to the end of the completed task to make it clearer
         if task_list[i] in selected_tasks:
             task_list[i] = task_list[i] + "✅"
     easygui.msgbox("Selected task(s) have been marked as completed.")
@@ -114,6 +118,7 @@ def mark_task_as_completed():
     message += "\nIncomplete tasks: \n"
     for task in incomplete_tasks:
         message += task + "\n"
+    # Display the completed and incomplete tasks
     easygui.msgbox(message)
     save_option()
 
@@ -127,6 +132,9 @@ def save_option():
         easygui.msgbox("Task list saved.")
         return True
     elif save_option == "No":
+        with open(list_name, "r", encoding="utf-8") as file:
+            task_list.clear()
+            task_list.extend(file.read().splitlines())
         easygui.msgbox("Task list is not saved.")
         return True
     else: # If the user closes the window or clicked cancel.
@@ -154,7 +162,7 @@ def read_from_file():
 def add_task(task_list):
     # Ask the user to to enter a task.
     while True:
-        new_tasks = easygui.textbox(f"Current tasks: \n{task_list}\nPlease enter the tasks you want to add to this list (One task per line): ", "Add Tasks")
+        new_tasks = easygui.textbox(f"Current tasks: \n{task_list}\nPlease enter the tasks you want to add to this list \n(One task per line): ", "Add Tasks")
         if new_tasks is None: # If the user closes the window or clicked cancel, it will be seen as an empty input and return to menu.
             return None
         tasks = new_tasks.splitlines()
@@ -166,6 +174,7 @@ def add_task(task_list):
                 easygui.msgbox("Task cannot be empty, please enter a valid task:")
                 continue
         
+        # Check if the new task is the same with the completed tasks in the list
             duplicate = False
             for existing_task in task_list:
                 if existing_task.replace("✅", "") == task:
@@ -177,12 +186,14 @@ def add_task(task_list):
             else:
                 task_list.append(task)
                 added_tasks.append(task)    
-                
+        
+        # Display the added tasks        
         if added_tasks:
             message = "These tasks are now added to the list: \n"
             for task in added_tasks:
                 message += task + "\n"
             easygui.msgbox(message)
+        # Display the duplicate tasks (not added)
         if existing_tasks:
             message = "These tasks already exist in the list: \n"
             for task in existing_tasks:
@@ -323,7 +334,7 @@ def delete_list_file():
     if not_found:
         message = "These files are not found"
         for file in not_found:
-            message += f + "\n"
+            message += file + "\n"
         easygui.msgbox(message)
     return True
     
